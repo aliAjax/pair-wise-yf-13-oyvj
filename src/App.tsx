@@ -1,4 +1,6 @@
+import { useState } from "react";
 import "./styles.css";
+import SteeringConsole from "./steering/SteeringConsole";
 
 const project = {
   "sourceNo": 1,
@@ -54,15 +56,9 @@ const project = {
   ]
 };
 
-function App() {
+function WatchView() {
   return (
-    <main className="app">
-      <section className="hero">
-        <p>{project.id} · 源提示词{project.sourceNo} · Port {project.port}</p>
-        <h1>{project.title}</h1>
-        <span>{project.prompt}</span>
-      </section>
-
+    <>
       <section className="metrics">
         {project.metrics.map((metric: string, index: number) => (
           <article key={metric}>
@@ -121,6 +117,31 @@ function App() {
           ))}
         </div>
       </section>
+    </>
+  );
+}
+
+function App() {
+  const [view, setView] = useState<"steering" | "watch">("steering");
+
+  return (
+    <main className="app">
+      <section className="hero">
+        <p>{project.id} · 源提示词{project.sourceNo} · Port {project.port}</p>
+        <h1>{project.title}</h1>
+        <span>{project.prompt}</span>
+      </section>
+
+      <nav className="tabs">
+        <button className={view === "steering" ? "tab-active" : ""} onClick={() => setView("steering")}>
+          舵机试验与隔离台
+        </button>
+        <button className={view === "watch" ? "tab-active" : ""} onClick={() => setView("watch")}>
+          值班记录
+        </button>
+      </nav>
+
+      {view === "steering" ? <SteeringConsole /> : <WatchView />}
     </main>
   );
 }
